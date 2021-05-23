@@ -1,15 +1,17 @@
 from django.shortcuts import render
 from django.http import HttpResponse
 from .models import Service
+from rest_framework.decorators import api_view
 
 # Create your views here.
+@api_view(['GET'])
 def index(request):
-    services = ""
+    services = ''
     services_list = Service.objects.order_by()
     for service in services_list:
         services += (service.service_name + ', ')
 
-    response = "Spis dostępnych usług firmy wulkanizacyjnej:\n" + services
+    response = 'Spis dostępnych usług firmy wulkanizacyjnej: ' + services
     return HttpResponse(response)
 
 def information(request, service_name):

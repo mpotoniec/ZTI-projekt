@@ -6,6 +6,8 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.response import Response
 
+from Services.models import Service
+
 # Create your views here.
 @api_view(['GET'])
 @authentication_classes([TokenAuthentication])
@@ -21,6 +23,15 @@ def index(request):
     username = user.username
     print(username)
 
+    response = 'Dokonaj rezerwacji' + ' użytkowniku o nazwie: ' + username
+
+    services = ""
+    services_list = Service.objects.order_by()
+    for service in services_list:
+        services += (service.service_name + ', ')
+
+    response = response + " Spis dostępnych usług firmy wulkanizacyjnej: " + services
+
     #return Response(response + ' użytkowniku o tokenie: ' + token)
     #return Response(response + ' użytkowniku o nazwie: ' + username + ' i tokenie: ' + token)
-    return Response(response + ' użytkowniku o nazwie: ' + username)
+    return Response(response)

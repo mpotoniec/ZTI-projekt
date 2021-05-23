@@ -22,5 +22,7 @@ urlpatterns = [
     path('accounts/', include('Accounts.urls')),
     path('auth/', obtain_auth_token),
 
-    path('services/', include('Services.urls'))
+    path('services/', include('Services.urls')),
+
+    path('reservation/', include('Reservations.urls'))
 ]

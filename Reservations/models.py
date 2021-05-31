@@ -14,3 +14,6 @@ class Reservation(models.Model):
 
     reservation_from = models.DateTimeField()
     reservation_to = models.DateTimeField()
+
+    def __str__(self):
+        return f'Rezerwacja użytkownika: {self.user}, nazwa usługi: {self.service.service_name}, na stanowisku: {self.station.station_number} Czas trwania od: {self.reservation_from}, do {self.reservation_to}.'

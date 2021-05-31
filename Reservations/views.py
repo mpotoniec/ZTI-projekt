@@ -12,6 +12,8 @@ from .models import Reservation
 
 import datetime
 
+from Reservations.Reservation_Functions.availability import check_availability
+
 # Create your views here.
 @api_view(['GET'])
 @authentication_classes([TokenAuthentication])
@@ -145,6 +147,13 @@ def make_reservation(request):
         reservation_data_date_min_stop,
         reservation_data_date_sec
     )
+
+    if check_availability(station[0], reservation_date_start, reservation_date_stop) == False:
+        print('Brak rezerwacji')
+        return Response('Ten termin rezerwacji jest już zajęty. Spróbuj zarezerwować o innej godzinie')
+
+    print('Rezerwacja')
+
 
     new_reservation = Reservation()
     new_reservation.user = request.user

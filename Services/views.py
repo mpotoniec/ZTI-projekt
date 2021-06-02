@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from django.http import HttpResponse
+from django.http import HttpResponse, response
 from django.urls.conf import path
 from .models import Service, Station
 from rest_framework.decorators import api_view
@@ -16,7 +16,12 @@ def index(request):
         services += (service.service_cost + ', ')
         services += (service.service_duration + '. ')
 
-    response = services
+    #response = services
+    response = ''
+    for i in range(len(services) - 1):
+        if i == len(services) - 2:
+            break
+        response+=services[i]
     return Response(response)
 
 @api_view(['GET'])

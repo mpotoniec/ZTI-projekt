@@ -20,26 +20,28 @@ from Reservations.Reservation_Functions.availability import check_availability
 @permission_classes([IsAuthenticated])
 def index(request):
     
-    reservation = Reservation.objects.filter(user = request.user)
-    if not reservation: return Response('Nie posiadasz żadnej rezerwacji')
+    reservations = Reservation.objects.filter(user = request.user)
+    print(reservations)
+    if not reservations: return Response('Nie posiadasz żadnej rezerwacji')
     else: 
-        response = 'Twoja rezerwacja to: '
 
-        this_reservation = reservation.order_by()
-        service_id = this_reservation[0].service_id
-        station_id = this_reservation[0].station_id
-        from_ = this_reservation[0].reservation_from
-        to_ = this_reservation[0].reservation_to
+        response = ''
+        this_reservations = reservations.order_by()
+        for reservation in this_reservations:
+            service_id = reservation.service_id
+            station_id = reservation.station_id
+            from_ = reservation.reservation_from
+            to_ = reservation.reservation_to
 
-        service = Service.objects.filter(id = service_id)
-        this_service = service.order_by()
-        station = Station.objects.filter(id = station_id)
-        this_station = station.order_by()
+            service = Service.objects.filter(id = service_id)
+            this_service = service.order_by()
+            station = Station.objects.filter(id = station_id)
+            this_station = station.order_by()
 
-        this_service_name = this_service[0].service_name
-        this_station_number = this_station[0].station_number
+            this_service_name = this_service[0].service_name
+            this_station_number = this_station[0].station_number
 
-        response += this_service_name + (' termin od ') + str(from_) + (' termin do ') + str(to_) + ' na stanowsku nr: ' + str(this_station_number)
+            response += '|' + this_service_name + (' termin od ') + str(from_) + (' termin do ') + str(to_) + ' na stanowsku nr: ' + str(this_station_number)
 
         return Response(response)
 
@@ -148,6 +150,9 @@ def make_reservation(request):
         reservation_data_date_sec
     )
 
+    if reservation_date_start < datetime.datetime.now(): 
+        return Response('Nie można zarezerwować o tej godzinie')
+
     if check_availability(station[0], reservation_date_start, reservation_date_stop) == False:
         print('Brak rezerwacji')
         return Response('Ten termin rezerwacji jest już zajęty. Spróbuj zarezerwować o innej godzinie')
@@ -164,4 +169,4 @@ def make_reservation(request):
 
     new_reservation.save()
 
-    return Response('Dokonano rezerwacji')
+    return Response('Rezerwacja udana')
